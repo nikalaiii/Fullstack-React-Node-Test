@@ -1,69 +1,67 @@
-# React + TypeScript + Vite
+# Frontend – Task Manager App (React + Vite + Material UI)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to the **Task Manager Frontend**! This is the user interface for the Fullstack-React-Node-Test project, built with React, Vite, and Material UI.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
+- User registration, login, and logout
+- List, add, edit, and delete your tasks
+- Form validation with clear user feedback
+- Responsive and modern UI (Material UI)
+- Connects seamlessly to the backend API
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Getting Started
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 1. Install dependencies
+```sh
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Configure environment variables
+- Copy `.env.example` to `.env` and set `VITE_API_URL` to your backend URL (default: `http://localhost:4000`).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 3. Run the app
+```sh
+npm run dev
 ```
+- The app will be available at [http://localhost:5173](http://localhost:5173) (or as shown in your terminal).
+
+---
+
+## ⚙️ Environment Variables
+| Variable         | Description                        |
+|------------------|------------------------------------|
+| VITE_API_URL     | URL of the backend API             |
+
+---
+
+## 📦 Available Scripts
+- `npm run dev` – Start the development server
+- `npm run build` – Build for production
+- `npm run preview` – Preview the production build
+- `npm test` – Run frontend tests (Jest + React Testing Library)
+
+---
+
+## 🔗 Backend Connection
+- All API requests are proxied to the backend defined in `VITE_API_URL`.
+- Requires the backend server to be running for full functionality.
+
+---
+
+## 🧪 Testing
+- Run `npm test` to execute all component tests.
+
+---
+
+## 📁 Project Structure
+- `src/components/` – UI components (AuthForm, TaskForm, TaskList, Navbar)
+- `src/api.ts` – API client for backend communication
+- `src/types.ts` – TypeScript types
+
+---
+
+For more details, see the main project README.
