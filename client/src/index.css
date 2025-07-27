@@ -1,4 +1,5 @@
 :root {
+  margin: auto;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -26,8 +27,11 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
+  min-width: 100vw;
   min-height: 100vh;
+  justify-content: center; /* центр по горизонталі */
+  align-items: center;     /* центр по вертикалі */
+  background-color: #fff;
 }
 
 h1 {

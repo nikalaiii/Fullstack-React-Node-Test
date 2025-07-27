@@ -9,7 +9,10 @@ const cookieParser = require('cookie-parser');
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true
+}));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -43,6 +46,7 @@ app.post('/auth/register', async (req, res) => {
     const user = await prisma.user.create({ data: { username, password: hashed } });
     res.status(201).json({ id: user.id, username: user.username });
   } catch (err) {
+    console.error(`Error creating user: ${err.message}`);
     res.status(400).json({ error: 'Username already exists' });
   }
 });

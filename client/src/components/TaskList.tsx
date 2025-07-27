@@ -1,8 +1,21 @@
 import React from 'react';
-import { Task } from '../types';
+
 import { List, ListItem, ListItemText, IconButton, Chip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { TaskStatus } from '../types'
+
+
+interface Task {
+  id: number;
+  title: string;
+  description: string;
+  status: TaskStatus;
+}
+
+
+import * as types from '../types';
+console.log(types); // Перевір, що експортується
 
 interface TaskListProps {
   tasks: Task[];

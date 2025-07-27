@@ -1,26 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import { Container, Box, CircularProgress } from '@mui/material';
-import { Task, User } from './types';
-import { getTasks, createTask, updateTask, deleteTask, register, login, logout, getMe } from './api';
-import { TaskList } from './components/TaskList';
-import { TaskForm } from './components/TaskForm';
-import { AuthForm } from './components/AuthForm';
-import { Navbar } from './components/Navbar';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Container, Box, CircularProgress } from "@mui/material";
+import { Task, User } from "./types";
+import {
+  getTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+  register,
+  login,
+  logout,
+  getMe,
+} from "./api";
+import { TaskList } from "./components/TaskList";
+import { TaskForm } from "./components/TaskForm";
+import { AuthForm } from "./components/AuthForm";
+import { Navbar } from "./components/Navbar";
 
 const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [editing, setEditing] = useState<Task | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const fetchTasks = async () => {
     try {
       const res = await getTasks();
       setTasks(res.data);
     } catch (e) {
-      setError('Failed to fetch tasks');
+      setError("Failed to fetch tasks");
     }
   };
 
@@ -40,31 +49,38 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    console.log(`USER STATE: ${JSON.stringify(user)}`);
+  }, [user]);
+
+  useEffect(() => {
     if (user) fetchTasks();
   }, [user]);
 
-  const handleAdd = async (data: Omit<Task, 'id'>) => {
+  const handleAdd = async (data: Omit<Task, "id">) => {
     try {
       await createTask(data);
       fetchTasks();
       setEditing(null);
-      setError('');
+      setError("");
     } catch {
-      setError('Failed to add task');
+      setError("Failed to add task");
     }
   };
 
-  const handleEdit = (task: Task) => setEditing(task);
+  const handleEdit = (task: Task) => {
+    setEditing(task);
+    console.log("EDITING ACTIVE", task);
+  };
 
-  const handleUpdate = async (data: Omit<Task, 'id'>) => {
+  const handleUpdate = async (data: Omit<Task, "id">) => {
     if (!editing) return;
     try {
       await updateTask(editing.id, data);
       fetchTasks();
       setEditing(null);
-      setError('');
+      setError("");
     } catch {
-      setError('Failed to update task');
+      setError("Failed to update task");
     }
   };
 
@@ -73,26 +89,30 @@ const App: React.FC = () => {
       await deleteTask(id);
       fetchTasks();
     } catch {
-      setError('Failed to delete task');
+      setError("Failed to delete task");
     }
   };
 
-  const handleRegister = async (data: { username: string; password: string }) => {
+  const handleRegister = async (data: {
+    username: string;
+    password: string;
+  }) => {
     try {
+      console.log(`REGISTER DATA: ${JSON.stringify(data)}`);
       await register(data);
       handleLogin(data);
     } catch {
-      setError('Registration failed');
+      setError("Registration failed");
     }
   };
 
-  const handleLogin = async (data: { username: string; password: string }) => {
+  const handleLogin = async (data: any) => {
     try {
       await login(data);
-      fetchMe();
-      setError('');
+      await fetchMe(); // Чекаємо оновлення user
+      setError("");
     } catch {
-      setError('Login failed');
+      setError("Login failed");
     }
   };
 
@@ -102,30 +122,68 @@ const App: React.FC = () => {
     setTasks([]);
   };
 
-  if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}><CircularProgress /></Box>;
+  if (loading)
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 8 }}>
+        <CircularProgress />
+      </Box>
+    );
 
   return (
-    <Router>
-      <Navbar isAuthenticated={!!user} onLogout={handleLogout} onNavigate={route => window.location.href = route} />
+    <>
+      <Navbar isAuthenticated={!!user} onLogout={handleLogout} />
       <Container sx={{ mt: 4 }}>
         <Routes>
-          <Route path="/" element={user ? (
-            <>
-              <TaskList tasks={tasks} onEdit={handleEdit} onDelete={handleDelete} />
-              <Box sx={{ mt: 4 }}>
-                <TaskForm
-                  initial={editing || undefined}
-                  onSubmit={editing ? handleUpdate : handleAdd}
-                  error={error}
-                />
-              </Box>
-            </>
-          ) : <AuthForm onSubmit={handleLogin} error={error} type="login" />} />
-          <Route path="/login" element={<AuthForm onSubmit={handleLogin} error={error} type="login" />} />
-          <Route path="/register" element={<AuthForm onSubmit={handleRegister} error={error} type="register" />} />
+          <Route
+            path="/"
+            element={
+              user ? (
+                <>
+                  <TaskList
+                    tasks={tasks}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                  />
+                  <Box sx={{ mt: 4 }}>
+                    <TaskForm
+                      onSubmit={editing ? handleUpdate : handleAdd}
+                      error={error}
+                      initial={
+                        editing
+                          ? {
+                              title: editing.title,
+                              description: editing.description,
+                              status: editing.status,
+                            }
+                          : null
+                      }
+                    />
+                  </Box>
+                </>
+              ) : (
+                <AuthForm onSubmit={handleLogin} error={error} type="login" />
+              )
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <AuthForm onSubmit={handleLogin} error={error} type="login" />
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <AuthForm
+                onSubmit={handleRegister}
+                error={error}
+                type="register"
+              />
+            }
+          />
         </Routes>
       </Container>
-    </Router>
+    </>
   );
 };
 

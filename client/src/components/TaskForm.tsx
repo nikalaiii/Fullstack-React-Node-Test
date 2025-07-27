@@ -5,21 +5,27 @@ import { Button, TextField, MenuItem, Box, Alert } from '@mui/material';
 const statusOptions: TaskStatus[] = ['PENDING', 'IN_PROGRESS', 'COMPLETED'];
 
 interface TaskFormProps {
-  initial?: Partial<Task>;
   onSubmit: (data: Omit<Task, 'id'>) => void;
   error?: string;
+  initial?: Omit<Task, 'id'> | null;
 }
 
-export const TaskForm: React.FC<TaskFormProps> = ({ initial = {}, onSubmit, error }) => {
-  const [title, setTitle] = useState(initial.title || '');
-  const [description, setDescription] = useState(initial.description || '');
-  const [status, setStatus] = useState<TaskStatus>(initial.status || 'PENDING');
+export const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, error, initial }) => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [status, setStatus] = useState<TaskStatus>('PENDING');
   const [touched, setTouched] = useState(false);
 
   useEffect(() => {
-    setTitle(initial.title || '');
-    setDescription(initial.description || '');
-    setStatus(initial.status || 'PENDING');
+    if (initial) {
+      setTitle(initial.title);
+      setDescription(initial.description);
+      setStatus(initial.status);
+    } else {
+      setTitle('');
+      setDescription('');
+      setStatus('PENDING');
+    }
   }, [initial]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -27,6 +33,10 @@ export const TaskForm: React.FC<TaskFormProps> = ({ initial = {}, onSubmit, erro
     setTouched(true);
     if (!title.trim() || !description.trim()) return;
     onSubmit({ title, description, status });
+    setTitle('');
+    setDescription('');
+    setStatus('PENDING');
+    setTouched(false);
   };
 
   return (
@@ -61,4 +71,4 @@ export const TaskForm: React.FC<TaskFormProps> = ({ initial = {}, onSubmit, erro
       <Button type="submit" variant="contained">Save</Button>
     </Box>
   );
-}; 
+};
